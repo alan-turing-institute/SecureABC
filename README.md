@@ -1,7 +1,7 @@
 # SecureABC Paper and Reference Implementation
 
 ## Paper
-The latest SecureABC AntiBody Certificates paper can be found at [SecureABC.pdf](SecureABC.pdf). The authors welcome feedback and may be contacted by email using the details in the paper or by clicking the following <a href="mailto:chicks@turing.ac.uk;dbutler@turing.ac.uk;cm@warwick.ac.uk;jon.crowcroft@cl.cam.ac.uk">link</a>.
+The latest SecureABC AntiBody Certificates paper can be found at [SecureABC.pdf](SecureABC.pdf). The authors welcome feedback and may be contacted by email using the details in the paper or by clicking the following [link](mailto:chicks@turing.ac.uk;dbutler@turing.ac.uk;cm@warwick.ac.uk;jon.crowcroft@cl.cam.ac.uk?subject=[SecureABC]).
 
 ## Reference Implementation
 
