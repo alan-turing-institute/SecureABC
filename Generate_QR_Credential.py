@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-# Tool to demonstrate the feasibility of encoding an "antibody certificate"
-# credential into a standard QR-code.
+# Tool to demonstrate the feasibility of encoding a SecureABC
+# "AntiBody Certificate" into a standard QR-code.
 # C Hicks 16-05-2020
 #
 # Dependencies:
 #   qrcode 6.1  https://pypi.org/project/qrcode/
 #   matplotlib  https://pypi.org/project/matplotlib/
+#   OpenSSL     https://pypi.org/project/pyOpenSSL/ (deprecated for crypto)
+
 import qrcode
 import matplotlib.pyplot as plt
 import base64
@@ -15,16 +17,17 @@ from OpenSSL import crypto
 
 # Certificate data object
 class CertificateData:
-    # Certificate profile
+
+    # Initialise certificate data
     def __init__(self, user_img, user_name, user_date, user_CID):
         self.user_img = user_img  # user_img_arr = np.asarray(user_img)
         self.user_name = user_name
         self.user_date = user_date
         self.user_CID = user_CID
         self.cert_bytes = self.getByteArray()
-        # TODO: Add error handling if cert_bytes > 2953-signature size (136?)
+        # TODO: Add error if cert_bytes > QR capacity (2953-signature size)
 
-    # Return the certificate data as a byte array
+    # Return the certificate data as a byte array with variable field lengths
     def getByteArray(self):
         user_img_length = len(self.user_img).to_bytes(2, 'big')
         user_img_bytes = self.user_img
@@ -40,10 +43,6 @@ class CertificateData:
                             user_date_len + user_date_bytes +\
                                 user_CID_len + user_CID_bytes
 
-        # restore = np.frombuffer(user_img_bytes, dtype=np.uint8)
-        # plt.imshow(restore.reshape(221,180), cmap='gray')
-        # plt.show()
-
         return cert_bytes
 
     # Signs the certificate data using pkey and then returns the certificate
@@ -57,9 +56,9 @@ class CertificateData:
 
 
 def main():
-    signer_pkey_filename = 'OpenSSLKeys/harry_key.pem'
-    user_image_filename = 'chris_bw.jpeg'
-    qr_code_filename = 'chris_qr.png'
+    signer_pkey_filename = 'OpenSSLKeys/sign_key.pem'
+    user_image_filename = 'user_bw.jpeg'
+    qr_code_filename = 'user_qr.png'
 
     # Define QR code specification
     qr = qrcode.QRCode(
@@ -97,6 +96,7 @@ def main():
     plt.savefig(qr_code_filename, bbox_inches='tight')
     print('User QR code output to {}'.format(qr_code_filename))
     print('Done.')
+
 
 if __name__ == '__main__':
     main()
