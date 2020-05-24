@@ -69,7 +69,7 @@ def main():
 
     # Create user data
     user_img = open(user_image_filename, "rb").read()
-    user_name = "John Doe"
+    user_name = "Alice Doe"
     user_date = "16052020-16082020"
     user_CID = "0x1fc60e1a4e238ac6cce9d79097a268af"
     user_certData = CertificateData(user_img, user_name, user_date, user_CID)
