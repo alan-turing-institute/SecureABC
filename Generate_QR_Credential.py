@@ -25,7 +25,6 @@ class CertificateData:
         self.user_date = user_date
         self.user_CID = user_CID
         self.cert_bytes = self.getByteArray()
-        # TODO: Add error if cert_bytes > QR capacity (2953-signature size)
 
     # Return the certificate data as a byte array with variable field lengths
     def getByteArray(self):
@@ -87,8 +86,13 @@ def main():
     # Get signed user certificate and build QR code
     signed_user_cert = user_certData.getSignedCertificateByteArray(pkey)
 
-    qr.add_data(base64.b64encode(signed_user_cert))
-    qr.make(fit=True)
+    qr.add_data(base64.b85encode(signed_user_cert))
+
+    try:
+        qr.make(fit=True)
+    except qrcode.exceptions.DataOverflowError:
+        print('User data too big for QR code. Please optimise image.')
+        exit()
 
     qr_img = qr.make_image(fill_color="black", back_color="white")
     plt.imshow(qr_img, cmap='gray')

@@ -23,7 +23,7 @@ import io
 class QR_data():
     def __init__(self, b64_data):
         readPos = 0
-        self.raw_data = base64.b64decode(b64_data)
+        self.raw_data = base64.b85decode(b64_data)
         user_img_length = int.from_bytes(self.raw_data[:2], 'big')
         readPos += 2
         self.user_img_bytes = self.raw_data[readPos:readPos+user_img_length]
