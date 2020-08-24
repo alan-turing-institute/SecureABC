@@ -30,13 +30,17 @@ class CertificateData:
     def getByteArray(self):
         user_img_length = len(self.user_img).to_bytes(2, 'big')
         user_img_bytes = self.user_img
+        print(len(self.user_img))
+        print(user_img_length)
         user_name_len = len(self.user_name).to_bytes(2, 'big')
+        print(len(self.user_name))
         user_name_bytes = bytearray(self.user_name, 'utf-8')
         user_date_len = len(self.user_date).to_bytes(2, 'big')
         user_date_bytes = bytearray(self.user_date, 'utf-8')
         user_CID_len = len(self.user_CID).to_bytes(2, 'big')
         user_CID_bytes = bytearray(self.user_CID, 'utf-8')
 
+        #
         cert_bytes = user_img_length + user_img_bytes +\
                         user_name_len + user_name_bytes +\
                             user_date_len + user_date_bytes +\
@@ -53,7 +57,6 @@ class CertificateData:
 
         return self.cert_bytes + cert_sign_len + cert_sign_bytes
 
-
 def main():
     signer_pkey_filename = 'OpenSSLKeys/sign_key.pem'
     user_image_filename = 'user_bw.jpeg'
@@ -63,14 +66,14 @@ def main():
     qr = qrcode.QRCode(
         version=40,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
+        box_size=100,
         border=4,
     )
 
     # Create user data
     user_img = open(user_image_filename, "rb").read()
     user_name = "Alice Doe"
-    user_date = "16052020-16082020"
+    user_date = "16/08/2020 - 16/11/2020"
     user_CID = "0x1fc60e1a4e238ac6cce9d79097a268af"
     user_certData = CertificateData(user_img, user_name, user_date, user_CID)
 
@@ -85,11 +88,15 @@ def main():
 
     # Get signed user certificate and build QR code
     signed_user_cert = user_certData.getSignedCertificateByteArray(pkey)
+    print(len(signed_user_cert))
 
-    qr.add_data(base64.b85encode(signed_user_cert))
+    print(len(base64.b64encode(signed_user_cert)))
+
+    # qr.add_data(base64.b64encode(signed_user_cert))
+    qr.add_data(base64.b64encode(signed_user_cert))
 
     try:
-        qr.make(fit=True)
+        qr.make(fit=False)
     except qrcode.exceptions.DataOverflowError:
         print('User data too big for QR code. Please optimise image.')
         exit()
