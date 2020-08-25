@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import base64
 import OpenSSL
 from OpenSSL import crypto
-
+import time
 
 # Certificate data object
 class CertificateData:
@@ -30,10 +30,7 @@ class CertificateData:
     def getByteArray(self):
         user_img_length = len(self.user_img).to_bytes(2, 'big')
         user_img_bytes = self.user_img
-        print(len(self.user_img))
-        print(user_img_length)
         user_name_len = len(self.user_name).to_bytes(2, 'big')
-        print(len(self.user_name))
         user_name_bytes = bytearray(self.user_name, 'utf-8')
         user_date_len = len(self.user_date).to_bytes(2, 'big')
         user_date_bytes = bytearray(self.user_date, 'utf-8')
@@ -51,7 +48,10 @@ class CertificateData:
     # Signs the certificate data using pkey and then returns the certificate
     # data, plus the signature, as a bytearray
     def getSignedCertificateByteArray(self, pkey):
+        tic = time.perf_counter()
         cert_sign = OpenSSL.crypto.sign(pkey, self.cert_bytes, "sha256")
+        toc = time.perf_counter()
+        print('{} seconds to generate signature'.format((toc-tic)*1000))
         cert_sign_len = len(cert_sign).to_bytes(2, 'big')
         cert_sign_bytes = bytearray(cert_sign)
 
@@ -70,13 +70,6 @@ def main():
         border=4,
     )
 
-    # Create user data
-    user_img = open(user_image_filename, "rb").read()
-    user_name = "Alice Doe"
-    user_date = "16/08/2020 - 16/11/2020"
-    user_CID = "0x1fc60e1a4e238ac6cce9d79097a268af"
-    user_certData = CertificateData(user_img, user_name, user_date, user_CID)
-
     # Load private key for signing user data
     key_file = open(signer_pkey_filename, "r")
     key = key_file.read()
@@ -86,11 +79,17 @@ def main():
     else:
         pkey = crypto.load_pkcs12(key).get_privatekey()
 
+    tic = time.perf_counter()
+
+    # Create user data
+    user_img = open(user_image_filename, "rb").read()
+    user_name = "Alice Doe"
+    user_date = "16/08/2020 - 16/11/2020"
+    user_CID = "0x1fc60e1a4e238ac6cce9d79097a268af"
+    user_certData = CertificateData(user_img, user_name, user_date, user_CID)
+
     # Get signed user certificate and build QR code
     signed_user_cert = user_certData.getSignedCertificateByteArray(pkey)
-    print(len(signed_user_cert))
-
-    print(len(base64.b64encode(signed_user_cert)))
 
     # qr.add_data(base64.b64encode(signed_user_cert))
     qr.add_data(base64.b64encode(signed_user_cert))
@@ -105,6 +104,9 @@ def main():
     plt.imshow(qr_img, cmap='gray')
     plt.axis('off')
     plt.savefig(qr_code_filename, bbox_inches='tight')
+    toc = time.perf_counter()
+
+    print('{} seconds to generate complete QR code output'.format((toc-tic)*1000))
     print('User QR code output to {}'.format(qr_code_filename))
     print('Done.')
 

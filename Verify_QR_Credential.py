@@ -16,6 +16,7 @@ from OpenSSL import crypto
 import cv2
 import base64
 import io
+import time
 
 
 # QR data class is used to load the QR data payload, extract the certificate
@@ -67,8 +68,11 @@ class QR_data():
 
     # Verify the signature on the certificate
     def verify_signature(self, cert):
+        tic = time.perf_counter()
         cert_verify = OpenSSL.crypto.verify(cert, self.cert_sign_bytes,
                                                 self.raw_verify_bytes, 'sha256')
+        toc = time.perf_counter()
+        print('Verifying QR signature took {} ms'.format((toc-tic)*1000))
         if cert_verify is None:
             return True
         else:
