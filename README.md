@@ -13,9 +13,9 @@ To generate an example SecureABC QR code, run [Generate_QR_Credential.py](Genera
 
 . Credentials, which can be displayed as standard  QR codes, are signed using ECDSA over brainpoolP512r1 and comprise a user photo, name, a unique Certificate ID (CID) number and a validity period. Credentials are completely self-contained and can be verified offline, without interacting with the signer. Revocation is based on distributing revoked CIDs to verifiers.
 
-Example credential verification using our demonstration app:
+Example credential verification using our demonstration application:
 
-![example credential](user_qr.png "Demo SecureABC QR Cerification Application")
+<img src="user_qr.png" alt="Demo SecureABC QR Cerification Application", width=50%>
 
 ## Running the code
 
