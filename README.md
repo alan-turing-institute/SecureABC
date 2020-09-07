@@ -15,9 +15,9 @@ To generate an example SecureABC QR code, run [Generate_QR_Credential.py](Genera
 
 Example credential verification using our demonstration application:
 
-<center>
-	<img src="user_qr.png" alt="Demo SecureABC QR Cerification Application", width=70%>
-</center>
+
+<img style="margin-left: auto; margin-right: auto;" src="user_qr.png" alt="Demo SecureABC QR Cerification Application", width=70%>
+
 
 ## Running the code
 
